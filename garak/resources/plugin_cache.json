@@ -4512,7 +4512,7 @@
         "avid-effect:security:S0403",
         "avid-effect:performance:P0204"
       ],
-      "mod_time": "2024-07-25 15:08:38 +0000"
+      "mod_time": "2024-09-21 11:39:08 +0000"
     },
     "detectors.packagehallucination.JavaScriptNpm": {
       "description": "Check if the output tries to import or require an npm package not listed in the npm registry",
@@ -5139,7 +5139,7 @@
       "precision": 0.0,
       "recall": 0.0,
       "tags": [],
-      "mod_time": "2024-07-01 17:51:48 +0000"
+      "mod_time": "2024-09-21 11:39:08 +0000"
     },
     "detectors.replay.RepeatDiverges": {
       "description": "Subclass of Detector using attempt's notes[triggers] as list of strings to match",
@@ -5752,6 +5752,27 @@
       "parallel_capable": true,
       "supports_multiple_generations": true,
       "mod_time": "2024-08-29 13:35:37 +0000"
+    },
+    "generators.custom_policy.CustomPolicyGenerator": {
+      "DEFAULT_PARAMS": {
+        "max_tokens": 150,
+        "temperature": null,
+        "top_k": null,
+        "context_len": null
+      },
+      "active": true,
+      "generator_family_name": null,
+      "modality": {
+        "in": [
+          "text"
+        ],
+        "out": [
+          "text"
+        ]
+      },
+      "parallel_capable": true,
+      "supports_multiple_generations": false,
+      "mod_time": "2024-09-21 11:39:08 +0000"
     },
     "generators.function.Multiple": {
       "description": "pass a module#function to be called as generator, with format function(prompt:str, generations:int, **kwargs)->List[Union(str, None)]",
@@ -6544,7 +6565,7 @@
       },
       "parallel_capable": true,
       "supports_multiple_generations": false,
-      "mod_time": "2024-09-12 14:08:13 +0000"
+      "mod_time": "2024-09-21 11:39:08 +0000"
     },
     "generators.test.Blank": {
       "description": "This generator always returns the empty string.",
