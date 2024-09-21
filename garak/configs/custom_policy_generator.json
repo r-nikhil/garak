@@ -6,7 +6,7 @@
           "method":"post",
           "headers":{
              "Content-Type":"application/json",
-             "Authorization":"Bearer 077a7d2e-479f-4d6d-bb12-2710e62bb1a9"
+             "Authorization":"Bearer"
           },
           "req_template_json_object":{
              "messages":[{
