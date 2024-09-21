@@ -1,0 +1,24 @@
+{
+    "rest":{
+       "RestGenerator":{
+          "name":"CustomPolicyGenerator",
+          "uri":"https://api.dynamofl.com/v1/moderation/analyze/",
+          "method":"post",
+          "headers":{
+             "Content-Type":"application/json",
+             "Authorization":"Bearer 077a7d2e-479f-4d6d-bb12-2710e62bb1a9"
+          },
+          "req_template_json_object":{
+             "messages":[{
+                "role":"user",
+                "content":"$INPUT"}]
+             ,
+             "textType":"MODEL_INPUT",
+          "policyIds":"668b6f04b9c405d55e3bb999"
+          }
+          
+       },
+       "response_json":true,
+       "response_json_field":"$.appliedPolicies[0].outputs.guard_classification"
+    }
+ }

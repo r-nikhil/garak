@@ -70,7 +70,8 @@ class RestGenerator(Generator):
 
         # load configuration since super.__init__ has not been called
         self._load_config(config_root)
-
+        self.context_len = 500
+        self.max_tokens = 500
         if (
             hasattr(self, "req_template_json_object")
             and self.req_template_json_object is not None
@@ -141,6 +142,13 @@ class RestGenerator(Generator):
         """JSON escape a string"""
         # trim first & last "
         return json.dumps(text)[1:-1]
+    
+    def _truncate_input(self, text: str, max_tokens: int) -> str:
+        """Truncate the input text to ensure it does not exceed max_tokens"""
+        tokens = text.split()  # Simple tokenization by splitting on whitespace
+        if len(tokens) > max_tokens:
+            tokens = tokens[:max_tokens]
+        return ' '.join(tokens)
 
     def _populate_template(
         self, template: str, text: str, json_escape_key: bool = False
@@ -154,6 +162,7 @@ class RestGenerator(Generator):
         $KEY is only set if the relevant environment variable is set; the
         default variable name is REST_API_KEY but this can be overridden.
         """
+        truncated_text = self._truncate_input(text, 300)
         output = template
         if "$KEY" in template:
             if self.api_key is None:
@@ -164,7 +173,7 @@ class RestGenerator(Generator):
                 output = output.replace("$KEY", self.escape_function(self.api_key))
             else:
                 output = output.replace("$KEY", self.api_key)
-        return output.replace("$INPUT", self.escape_function(text))
+        return output.replace("$INPUT", self.escape_function(truncated_text))
 
     # we'll overload IOError as the rate limit exception
     @backoff.on_exception(backoff.fibo, RateLimitHit, max_value=70)
@@ -182,7 +191,8 @@ class RestGenerator(Generator):
         request_headers = dict(self.headers)
         for k, v in self.headers.items():
             request_headers[k] = self._populate_template(v, prompt)
-
+        # print("Request Headers:", request_headers)
+        # print("Request Data:", request_data)
         # the prompt should not be sent via data when using a GET request. Prompt should be
         # serialized as parameters, in general a method could be created to add
         # the prompt data to a request via params or data based on the action verb
@@ -193,6 +203,8 @@ class RestGenerator(Generator):
             "timeout": self.request_timeout,
         }
         resp = self.http_function(self.uri, **req_kArgs)
+        # print(request_data)
+        # print(request_headers)
         if resp.status_code in self.ratelimit_codes:
             raise RateLimitHit(f"Rate limited: {resp.status_code} - {resp.reason}")
 
@@ -205,7 +217,7 @@ class RestGenerator(Generator):
             raise ConnectionError(
                 f"REST URI client error: {resp.status_code} - {resp.reason}"
             )
-
+        
         elif str(resp.status_code)[0] == "5":
             error_msg = f"REST URI server error: {resp.status_code} - {resp.reason}"
             if self.retry_5xx:
@@ -247,7 +259,7 @@ class RestGenerator(Generator):
                     % repr(resp.content)
                 )
                 return [None]
-
+        
         return response
 
 
